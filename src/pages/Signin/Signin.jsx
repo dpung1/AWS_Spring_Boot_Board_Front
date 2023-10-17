@@ -8,6 +8,14 @@ const SLayout = css`
     flex-direction: column;
     align-items: center;
 `
+const SInputBox = css`
+    margin-top: 5px;
+`; 
+
+const SButton = css`
+    margin-top: 5px;
+    width: 147px;
+`;
 
 function Signin(props) {
     const navigate = useNavigate();
@@ -32,10 +40,10 @@ function Signin(props) {
 
     return (
         <div css={SLayout}>
-            <div><input type='email' name='email' onChange={inputOnChange} placeholder=''/></div>
-            <div><input type='password' name='password' onChange={inputOnChange} placeholder=''/></div>
-            <div><button>로그인</button></div>
-            <div><button onClick={signupOnClick}>회원가입</button></div>
+            <div css={SInputBox}><input type='email' name='email' onChange={inputOnChange} placeholder='이메일'/></div>
+            <div css={SInputBox}><input type='password' name='password' onChange={inputOnChange} placeholder='비밀번호'/></div>
+            <div><button css={SButton}>로그인</button></div>
+            <div><button css={SButton} onClick={signupOnClick}>회원가입</button></div>
         </div>
     );
 }
