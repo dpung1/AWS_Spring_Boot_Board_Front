@@ -33,6 +33,7 @@ function SideBar(props) {
     const LogoutOnClick = () => {
         localStorage.removeItem("accessToken");
         window.location.replace("/")
+        // 페이지가 새로 열림 (상태 삭제)
     }
 
     return (
