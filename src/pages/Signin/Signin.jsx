@@ -51,12 +51,22 @@ function Signin(props) {
         }
     }
 
+    const kakaoLoginOnClick = () => {
+        window.location.href = "http://localhost:8080/oauth2/authorization/kakao"
+    }
+
+    const naverLoginOnClick = () => {
+        window.location.href = "http://localhost:8080/oauth2/authorization/naver"
+    }
+
     return (
         <div css={SLayout}>
             <div css={SInputBox}><input type='email' name='email' onChange={inputOnChange} placeholder='이메일'/></div>
             <div css={SInputBox}><input type='password' name='password' onChange={inputOnChange} placeholder='비밀번호'/></div>
             <div><button css={SButton} onClick={signinSubmitOnClick}>로그인</button></div>
             <div><button css={SButton} onClick={signupOnClick}>회원가입</button></div>
+            <div><button css={SButton} onClick={kakaoLoginOnClick}>카카오 로그인</button></div>
+            <div><button css={SButton} onClick={naverLoginOnClick}>네이버 로그인</button></div>
         </div>
     );
 }

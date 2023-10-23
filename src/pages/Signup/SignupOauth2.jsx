@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { instance } from '../../api/config/instance';
 
 const SLayout = css`
@@ -19,15 +19,27 @@ const SButton = css`
     width: 147px;
 `;
 
-
-function Signup(props) {
+function SignupOauth2(props) {
+    const [ searchParams, setSearchParams ] = useSearchParams();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!window.confirm("등록되지 않은 간편로그인 사용자입니다. 회원등록 하시겠습니까?")) {
+            window.location.replace("/auth/signin");
+        }
+    }, [])
+
     const user = { 
         email: "",
         password: "",
-        name: "",
-        nickname: ""
+        name: searchParams.get("name"),
+        nickname: "",
+        oauth2Id: searchParams.get("oauth2Id"),
+        profileImg: searchParams.get("profileImg"),
+        provider: searchParams.get("provider")
     }
+
+    console.log(user);
 
     const [ signupUser, setSignupUser ] = useState(user);
 
@@ -55,7 +67,7 @@ function Signup(props) {
         <div css={SLayout}>
             <div css={SInputBox}><input type='email' name='email' placeholder='이메일' onChange={inputOnChange}/></div>
             <div css={SInputBox}><input type='password' name='password' placeholder='비밀번호' onChange={inputOnChange}/></div>
-            <div css={SInputBox}><input type='text' name='name' placeholder='이름' onChange={inputOnChange}/></div>
+            <div css={SInputBox}><input type='text' name='name' placeholder='이름' value={signupUser.name} onChange={inputOnChange}/></div>
             <div css={SInputBox}><input type='text' name='nickname' placeholder='닉네임' onChange={inputOnChange}/></div>
             <div><button css={SButton} onClick={signupSubmitOnClick}>가입하기</button></div>
             <div><button css={SButton} onClick={signinOnClick}>로그인</button></div>
@@ -63,4 +75,4 @@ function Signup(props) {
     );
 }
 
-export default Signup;
+export default SignupOauth2;
