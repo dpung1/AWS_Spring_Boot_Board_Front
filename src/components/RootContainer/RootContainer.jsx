@@ -14,7 +14,7 @@ const SMainContainer = css`
     height: 100%;
     border: solid #dbdbdb;
     border-radius: 10px;
-    padding: 20px;
+    padding: 20px 20px 70px;
 `;
 
 function RootContainer({ children }) {
