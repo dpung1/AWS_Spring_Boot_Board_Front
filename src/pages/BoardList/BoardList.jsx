@@ -108,14 +108,19 @@ function BoardList(props) {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>번호</td>
-                        <td>게시글</td>
-                        <td>작성자</td>
-                        <td>작성일</td>
-                        <td>추천</td>
-                        <td>조회수</td>
-                    </tr>
+
+                    {!getBoardList.isLoading && getBoardList?.data.data.map(board => {
+                        return <tr key={board.boardId}>
+                                    <td>{board.boardId}</td>
+                                    <td>{board.title}</td>
+                                    <td>{board.nickname}</td>
+                                    <td>{board.createDate}</td>
+                                    <td>{board.hitsCount}</td>
+                                    <td>{board.likeCount}</td>
+                                </tr>
+                            
+                    })}
+
                 </tbody>
             </table>
 
@@ -133,3 +138,4 @@ function BoardList(props) {
 }
 
 export default BoardList;
+
