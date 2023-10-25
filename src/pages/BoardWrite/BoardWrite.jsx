@@ -5,6 +5,7 @@ import RootContainer from '../../components/RootContainer/RootContainer';
 import ReactQuill from 'react-quill';
 import Select from 'react-select';
 import { instance } from '../../api/config/instance';
+import { useQueryClient } from 'react-query';
 
 const STitleInput = css`
     margin-bottom: 5px;
@@ -32,17 +33,43 @@ const SbuttonBox = css`
 
 function BoardWrite(props) {
 
+    const [ boardContent, setBoardContent ] = useState({
+        title: "",
+        content: "",
+        categoryId: "",
+        categoryName: ""
+    });
+
+    const [ categories, setCategories ] = useState([]);
     const [ newCategory, setNewCategory ] = useState("");
     const [ selectOptions, setSelectOptions ] = useState([]); 
     const [ selectedOptions, setSelectedOptions ] = useState(selectOptions[0]);
 
+    const queryClient = useQueryClient();
+
+    useEffect(() => {
+        const principal = queryClient.getQueryState("getPrincipal");
+
+        if(!principal.data) {
+            alert("로그인 후 게시글을 작성하세요.")
+            window.location.replace("/")
+            return;
+        }
+        
+        if(!principal?.data?.data.enabled) {
+            alert("이메일 인증 후 게시글을 작성하세요.")
+            window.location.replace("/account/mypage")
+        }
+    }, [])
+
     useEffect(() =>{
         instance.get("/board/categories")
         .then((response) => {
+            setCategories(response.data)
             setSelectOptions(
                 response.data.map(
                     category => {
-                        return {value: category.boardCategoryName, label: category.boardCategoryName}
+                        return {value: category.boardCategoryId, label: category.boardCategoryName}
                     }
                 )
             )
@@ -51,10 +78,10 @@ function BoardWrite(props) {
 
     useEffect(() => {
         if(!!newCategory) {
-            const newOption = { value: newCategory, label: newCategory }
+            const newOption = { value: 0, label: newCategory }
 
             setSelectedOptions(newOption);
-            if(!selectOptions.map(option => option.value).includes(newOption.value)) {
+            if(!selectOptions.map(option => option.label).includes(newOption.label)) {
                 setSelectOptions([
                     ...selectOptions,
                     newOption
@@ -62,6 +89,14 @@ function BoardWrite(props) {
             }
         }
     }, [newCategory])
+
+    useEffect(() => {
+        setBoardContent({
+            ...boardContent,
+            categoryId: selectedOptions?.value,
+            categoryName: selectedOptions?.label
+        })
+    }, [selectedOptions])
 
     const modules = {
         toolbar: {
@@ -74,7 +109,10 @@ function BoardWrite(props) {
     }
 
     const titleInputChange = (e) => {
-
+        setBoardContent({
+            ...boardContent,
+            title: e.target.value
+        });
     }
 
     const selectOnChange = (option) => {
@@ -90,7 +128,24 @@ function BoardWrite(props) {
     }
 
     const contentInputOnChange = (value) => {
-        console.log(value)
+        setBoardContent({
+            ...boardContent,
+            content: value
+        });
+    }
+
+    const writeSubmitOnClick = async () => {
+        try {
+            const option = {
+                headers: {
+                    Authorization: localStorage.getItem("accessToken")
+                }
+            }
+            console.log(boardContent)
+            await instance.post("/board/content", boardContent, option)
+        } catch(error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -110,9 +165,8 @@ function BoardWrite(props) {
                     <ReactQuill style={{width: "727px", height: "500px"}} modules={modules} onChange={contentInputOnChange}/>
                 </div>
                 <div css={SbuttonBox}>
-                    <button >작성하기</button>
+                    <button onClick={writeSubmitOnClick}>작성하기</button>
                 </div>
-                    
             </div>
         </RootContainer>
     );
