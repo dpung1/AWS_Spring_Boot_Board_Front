@@ -41,6 +41,14 @@ const SSelectBox = css`
     width: 150px;
 `;
 
+const SBoardTitle = css`
+    max-width: 400px;
+    width: 500px;
+    overflow: hidden;
+    text-overflow: ellipsis; // 텍스트 넘치는거 잡아줌
+    white-space: nowrap; // 줄바꿈 삭제
+`;
+
 const SPageNumbersBox = css`
     display: flex;
     justify-content: center;
@@ -193,9 +201,9 @@ function BoardList(props) {
                 </thead>
                 <tbody>
                     {!getBoardList.isLoading && getBoardList?.data.data.map(board => {
-                        return <tr key={board.boardId}>
+                        return <tr key={board.boardId} onClick={() => {navigate(`/board/${board.boardId}`)}}>
                                     <td>{board.boardId}</td>
-                                    <td>{board.title}</td>
+                                    <td css={SBoardTitle}>{board.title}</td>
                                     <td>{board.nickname}</td>
                                     <td>{board.createDate}</td>
                                     <td>{board.likeCount}</td>

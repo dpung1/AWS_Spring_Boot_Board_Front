@@ -11,6 +11,7 @@ const SRootContainer = css`
 
 const SMainContainer = css`
     flex-grow: 1;
+    width: 770px;
     height: 100%;
     border: solid #dbdbdb;
     border-radius: 10px;
