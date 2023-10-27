@@ -7,7 +7,7 @@ import { instance } from '../../api/config/instance';
 import { ref, getDownloadURL, uploadBytes, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../api/firebase/firebase" 
 import { Line } from 'rc-progress'; 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const SInfoHeader = css`
     display: flex;
@@ -18,6 +18,11 @@ const SInfoHeader = css`
     border-radius: 10px;
     padding: 20px;
     width: 100%;
+`;
+
+const SInfoBox = css`
+    display: flex;
+    align-items: center;
 `;
 
 const SImgBox = css`
@@ -42,8 +47,13 @@ const SFile = css`
     display: none;
 `;
 
+const SPointBuy = css`
+    margin-left: 5px;
+    cursor: pointer;
+`
 
 function Mypage(props) {
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const principalState = queryClient.getQueryState("getPrincipal");
     const principal = principalState.data.data
@@ -139,7 +149,7 @@ function Mypage(props) {
         <RootContainer>
             <div>
                 <div css={SInfoHeader}>
-                    <div>
+                    <div css={SInfoBox}>
                         <div css={SImgBox} onClick={profileUploadOnClick}>
                             <img src={profileImgSrc} alt="" />
                         </div>
@@ -152,8 +162,9 @@ function Mypage(props) {
                                 <button onClick={uploadCancelOnClick}>취소</button>
                             </div>
                         }
-                    </div>
-                        누적 포인트 : 0 Point
+                        </div>
+                            <h3>누적 포인트 : {principal.userPoint} Point</h3>
+                            <button css={SPointBuy} onClick={() => {navigate("/store/products")}}>포인트 구매</button>
                     </div>
                 </div>
                 <div>
