@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import RootContainer from '../../components/RootContainer/RootContainer';
 import { useQuery, useQueryClient } from 'react-query';
 import { instance } from '../../api/config/instance';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const SBoradContainer = css`
     position: relative;
@@ -35,9 +35,21 @@ const SBoardTitle = css`
     white-space: normal; // normal 기본값, 너비를 초과할 경우 줄바꿈 허용
 `;
 
+const SWriteInfoBox = css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const SButtonBox = css`
+    & button {
+        margin: 0px 5px;
+    }
+`;
+
 const SLine = css`
     width: 100%;
-    margin: 40px 0px;
+    margin: 30px 0px;
     border-bottom: 2px solid #dbdbdb;
 `;
 
@@ -50,7 +62,7 @@ const SContentContainer = css`
 `;
 
 function BoardDetails(props) {
-
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const principal = queryClient.getQueryState("getPrincipal")
 
@@ -100,6 +112,7 @@ function BoardDetails(props) {
                 await instance.post(`/board/like/${boardId}`, {}, option);
             }
             getLikeState.refetch();
+            getBoard.refetch();
         } catch(error){
             console.log(error)
         }
@@ -107,6 +120,29 @@ function BoardDetails(props) {
 
     if(getBoard.isLoading) {
         return<></>
+    }
+
+    const editButtonOnClick = () => {
+        navigate(`/board/${boardId}/edit`)
+    }
+
+    const deleteButtonOnClick = async () => {
+        const option = {
+            headers: {
+                Authorization: localStorage.getItem("accessToken")
+            }
+        }
+        try {
+            if(window.confirm("정말 삭제하시겠습까?")) {
+                await instance.delete(`/board/${boardId}`, option);
+                alert("삭제되었습니다.")
+                navigate("/board/all/1")
+            } else {
+                alert("삭제가 취소되었습니다.")
+            }
+        } catch(error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -119,10 +155,19 @@ function BoardDetails(props) {
                             <div>{board.boardLikeCount}</div>
                         </button>
                     }
-
                 </div>
                 <h1 css={SBoardTitle}>{board.boardTitle}</h1>
-                <p><b>{board.nickname} - {board.createDate}</b></p>
+                <div css={SWriteInfoBox}>
+                    <p><b>{board.nickname} - {board.createDate}</b></p>
+                    {principal?.data?.data?.email === board.email ? (
+                        <div css={SButtonBox}>
+                            <button onClick={editButtonOnClick}>수정</button>
+                            <button onClick={deleteButtonOnClick}>삭제</button>
+                        </div>
+                    ) : (
+                        <></>
+                    )}
+                </div>
                 <div css={SLine}></div>
                 <div css={SContentContainer}dangerouslySetInnerHTML={{__html: board.boardContent}}></div>
             </div>

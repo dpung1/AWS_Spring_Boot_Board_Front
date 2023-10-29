@@ -10,6 +10,7 @@ import BoardWrite from './pages/BoardWrite/BoardWrite';
 import BoardList from './pages/BoardList/BoardList';
 import BoardDetails from './pages/BoardDetails/BoardDetails';
 import PointStore from './pages/PointStore/PointStore';
+import BoardEdit from './pages/BoardEdit/BoardEdit';
 
 function App() {
   // useQuery = 무조건 get 요청
@@ -43,6 +44,7 @@ function App() {
         <Route path='/auth/*' element={ <AuthRoute /> }/>
         <Route path='/account/*' element={ <AccountRoute /> }/>
         <Route path='/board/write' element={ <BoardWrite /> }/>
+        <Route path='/board/:boardId/edit' element={ <BoardEdit /> }/>
         <Route path='/board/:category/:page' element={ <BoardList /> }/>
         <Route path='/board/:boardId' element={ <BoardDetails /> }/>
         <Route path='/store/products' element={ <PointStore /> } />
